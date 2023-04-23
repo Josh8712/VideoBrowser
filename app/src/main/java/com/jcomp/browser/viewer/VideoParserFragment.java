@@ -25,16 +25,16 @@ abstract public class VideoParserFragment extends ViewerFragmentBase implements 
     }
 
     private void updateSelectedModel() {
-        if (nowPlayingPostPos < 0)
+        if (selectedPosition < 0)
             return;
-        if (nowPlayingPostPos < adapter.getItemCount()) {
-            Post post = adapter.getItem(nowPlayingPostPos);
+        if (selectedPosition < adapter.getItemCount()) {
+            Post post = adapter.getItem(selectedPosition);
             if (post.model == null) {
                 post.model = ModelCache.getSingleton(getContext()).getModel(post.getKey());
-                adapter.notifyItemChanged(nowPlayingPostPos);
+                adapter.notifyItemChanged(selectedPosition);
             }
         }
-        nowPlayingPostPos = -1;
+        selectedPosition = -1;
     }
 
     @Override
@@ -43,8 +43,8 @@ abstract public class VideoParserFragment extends ViewerFragmentBase implements 
             return;
         LinkedHashMap<String, Post> newPostList = new LinkedHashMap<>(this.postList);
         newPostList.putAll(postList);
-        root.post(() -> {
-            root.setRefreshing(false);
+        refreshLayout.post(() -> {
+            refreshLayout.setRefreshing(false);
             postFragmentModelView.getmPost().setValue(newPostList);
         });
     }
@@ -52,14 +52,14 @@ abstract public class VideoParserFragment extends ViewerFragmentBase implements 
     @Override
     public void addHLS(String hls, String preview) {
         if (resourceLoader != null && resourceLoader.isActive()) {
-            root.post(() -> resourceLoader.loadHLS(hls, preview));
+            refreshLayout.post(() -> resourceLoader.loadHLS(hls, preview));
         }
     }
 
     @Override
     public void addPlayerList(String[] playerList) {
         if (resourceLoader != null && resourceLoader.isActive()) {
-            root.post(() -> resourceLoader.loadPlayer(playerList, browser));
+            refreshLayout.post(() -> resourceLoader.loadPlayer(playerList, browser));
         }
     }
 }

@@ -10,7 +10,7 @@ import com.jcomp.browser.parser.post.db.Post;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class BookmarkFragment extends VideoParserFragment {
+public class PlaylistContentFragment extends VideoParserFragment {
     @Override
     public void addPost(LinkedHashMap<String, Post> postList) {
         // ignore online posts
@@ -26,7 +26,7 @@ public class BookmarkFragment extends VideoParserFragment {
             return;
         if (url.equals(rootURL)) {
             if (postList.isEmpty())
-                root.postDelayed(() -> {
+                refreshLayout.postDelayed(() -> {
                     new Thread(this::localLoad).start();
                 }, 200);
             else
@@ -39,11 +39,11 @@ public class BookmarkFragment extends VideoParserFragment {
         if (getContext() == null)
             return;
         PlaylistDoa db = AppDatabase.getInstance(getContext()).playlistDoa();
-        List<Post> data = db.getAll();
+        List<Post> data = db.getAllInPlaylist(Integer.parseInt(rootURL));
         LinkedHashMap<String, Post> posts = new LinkedHashMap<>();
         for (Post post : data) {
             post.set_model(ModelCache.getSingleton(getContext()).getModel(post.getKey()));
-            posts.put(post.getKey(), post);
+            posts.put(String.valueOf(post.uid), post);
         }
         FragmentActivity activity = getActivity();
         if (activity == null)

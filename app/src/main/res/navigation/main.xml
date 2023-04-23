@@ -21,10 +21,10 @@
 
     <navigation
         android:id="@+id/playlist_graph"
-        app:startDestination="@+id/nav_bookmark">
+        app:startDestination="@+id/nav_playlist">
         <fragment
-            android:id="@+id/nav_bookmark"
-            android:name="com.jcomp.browser.viewer.BookmarkFragment"
+            android:id="@+id/nav_playlist"
+            android:name="com.jcomp.browser.viewer.PlaylistRootFragment"
             android:label="@string/playlist" />
     </navigation>
 

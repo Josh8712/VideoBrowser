@@ -104,6 +104,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         void onClick(CallBackArgs args);
 
         void onModelClick(CallBackArgs args);
+        void onPlayListAdded(CallBackArgs args);
+        void onPlayListRemoved(CallBackArgs args);
+
     }
 
     public static class CallBackArgs {
@@ -127,6 +130,16 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public ModelCallBackArgs(Model model) {
             this.model = model;
+        }
+    }
+
+    public static class PlayListCallBackArgs extends CallBackArgs {
+        public Post post;
+        public int postPos;
+
+        public PlayListCallBackArgs(Post post, int postPos) {
+            this.post = post;
+            this.postPos = postPos;
         }
     }
 }

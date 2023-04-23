@@ -47,6 +47,7 @@ import com.jcomp.browser.databinding.ActivityPlayerBinding;
 import com.jcomp.browser.download.DownloadManager;
 import com.jcomp.browser.download.db.DownloadPost;
 import com.jcomp.browser.tools.HelperFunc;
+import com.jcomp.browser.viewer.PlayListHandler;
 import com.jcomp.browser.widget.BreathingAnim;
 
 import java.io.File;
@@ -92,6 +93,10 @@ public class Player extends AppCompatActivity {
         }
         final String rawInfo = getIntent().getStringExtra(PLAYER_INFO_KEY);
         playerInfo = new Gson().fromJson(rawInfo, PlayerInfo.class);
+        if(playerInfo.type == PlayerInfo.PlayerType.ONLINE)
+            new Thread(() -> {
+                PlayListHandler.insertToDefaultHistoryList(playerInfo.post, this);
+            }).start();
         previewer = playerInfo.getPreviewer();
 
         ActivityPlayerBinding binding = ActivityPlayerBinding.inflate(getLayoutInflater());

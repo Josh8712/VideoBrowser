@@ -115,7 +115,7 @@ public class PostFragment extends VideoParserFragment implements ParserPostPageC
 
     @Override
     public void pageInfoFinished() {
-        root.post(() -> {
+        refreshLayout.post(() -> {
             if (isSameURL(rootURL, browser.getUrl())) {
                 updateHistory(browser.getHistory());
             }

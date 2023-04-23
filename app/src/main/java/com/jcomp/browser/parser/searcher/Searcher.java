@@ -19,8 +19,8 @@ public class Searcher {
     }
 
     private void onClick(EditText input, MainActivity activity, DialogInterface dialog, int graph_ID) {
-        String query = input.getText().toString();
-        if (query.trim().isEmpty())
+        String query = input.getText().toString().trim();
+        if (query.isEmpty())
             return;
         String url = getURL(query);
         activity.popBack();

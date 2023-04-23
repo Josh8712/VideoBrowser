@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.snackbar.Snackbar;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.CharacterIterator;
@@ -123,4 +127,6 @@ public class HelperFunc {
         ClipData clip = ClipData.newPlainText("url", content);
         clipboard.setPrimaryClip(clip);
     }
+
+
 }

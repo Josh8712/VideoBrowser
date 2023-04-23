@@ -42,6 +42,7 @@ import com.jcomp.browser.parser.post.db.Post;
 import com.jcomp.browser.parser.searcher.Searcher;
 import com.jcomp.browser.parser.tag.Tag;
 import com.jcomp.browser.tools.HelperFunc;
+import com.jcomp.browser.viewer.ListBaseFragment;
 import com.jcomp.browser.viewer.PostFragment;
 import com.jcomp.browser.viewer.TagFragment;
 import com.jcomp.browser.viewer.ViewerFragmentBase;
@@ -190,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements ParserPageCallbac
             browser.toggleVisibility();
             return true;
         } else if (id == R.id.action_change_root) {
-            ViewerFragmentBase fragment = getCurrentFragment();
+            ListBaseFragment fragment = getCurrentFragment();
             if (fragment.canGoBack())
                 fragment.goHome();
             else if (navController.getCurrentDestination().getParent().getStartDestinationId() == navController.getCurrentDestination().getId())
@@ -276,10 +277,8 @@ public class MainActivity extends AppCompatActivity implements ParserPageCallbac
             return;
         if (newHistory == null || !newHistory.getUrl().startsWith("http") || newHistory.isSpecialTab()) {
             showBookmark(false);
-            menu.findItem(R.id.action_preview_toggle).setVisible(false);
             return;
-        } else if (!newHistory.isSpecialTab())
-            menu.findItem(R.id.action_preview_toggle).setVisible(true);
+        }
 
         new Thread(() -> {
             if (currentHistory == null)
@@ -298,9 +297,9 @@ public class MainActivity extends AppCompatActivity implements ParserPageCallbac
         }).start();
     }
 
-    private ViewerFragmentBase getCurrentFragment() {
+    private ListBaseFragment getCurrentFragment() {
         Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
-        return (ViewerFragmentBase) navHostFragment.getChildFragmentManager().getFragments().get(0);
+        return (ListBaseFragment) navHostFragment.getChildFragmentManager().getFragments().get(0);
     }
 
 
@@ -314,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements ParserPageCallbac
             else
                 browser.toggleVisibility();
         } else {
-            ViewerFragmentBase fragment = getCurrentFragment();
+            ListBaseFragment fragment = getCurrentFragment();
             if (fragment.canGoBack()) {
                 fragment.goBack();
             } else if (navController.getCurrentDestination().getParent().getStartDestinationId() != navController.getCurrentDestination().getId())
@@ -334,11 +333,15 @@ public class MainActivity extends AppCompatActivity implements ParserPageCallbac
     }
 
     public void subNavigate(String title, String url, int graph_id) {
+        subNavigate(title, url, graph_id, PostFragment.class.getCanonicalName());
+    }
+
+    public void subNavigate(String title, String url, int graph_id, String className) {
         if (navController.findDestination(graph_id) == null)
             return;
         int id = View.generateViewId();
         FragmentNavigator.Destination dest = navController.getNavigatorProvider().getNavigator(FragmentNavigator.class).createDestination();
-        dest.setClassName(PostFragment.class.getCanonicalName());
+        dest.setClassName(className);
         dest.setId(id);
         dest.setLabel(title);
         dest.addArgument(ROOT_URL_KEY, new NavArgument.Builder().setDefaultValue(url).build());

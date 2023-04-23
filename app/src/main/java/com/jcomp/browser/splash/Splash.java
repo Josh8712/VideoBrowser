@@ -13,37 +13,51 @@ import com.jcomp.browser.R;
 import com.jcomp.browser.cloud.FireStore;
 import com.jcomp.browser.databinding.ActivitySplashBinding;
 import com.jcomp.browser.download.DownloadManager;
+import com.jcomp.browser.parser.post.db.Playlist;
+import com.jcomp.browser.parser.post.db.PlaylistDefault;
+import com.jcomp.browser.parser.post.db.PlaylistDoa;
+import com.jcomp.browser.parser.post.db.PlaylistRecord;
+import com.jcomp.browser.parser.post.db.PlaylistWatched;
+import com.jcomp.browser.parser.post.db.Post;
 import com.jcomp.browser.welcome.Welcome;
 import com.jcomp.browser.widget.BreathingAnim;
+
+import java.util.List;
 
 public class Splash extends AppCompatActivity implements Runnable {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final ActivitySplashBinding binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        BreathingAnim.breath(findViewById(R.id.icon), 20, 100, 1000);
         new Thread(this).start();
     }
 
     @Override
     public void run() {
+        checkVersion();
+//        WorkRequest uploadWorkRequest =
+//                new OneTimeWorkRequest.Builder(TestTask.class)
+//                        .addTag("Test")
+//                        .build();
+//        WorkManager
+//                .getInstance(this)
+//                .enqueue(uploadWorkRequest);
+//
+//
+//
+//        WorkManager
+//                .getInstance(this).cancelAllWorkByTag("Test");
+
+        //            Intent intent = new Intent(Splash.this, Test.class);;
+//            startActivity(intent);
+//            finish();
+    }
+
+    private void checkVersion() {
         FireStore.getInstance().checkVersion(new FireStore.Callback() {
             @Override
             public void onProceed() {
-                AppDatabase.getInstance(getApplicationContext());
-                DownloadManager.getInstance(getApplicationContext());
-                MobileAds.initialize(Splash.this, initializationStatus -> {
-                    FireStore.getInstance().insertLogin(new FireStore.CallbackIgnore() {
-                        @Override
-                        public void onProceed() {
-                            runOnUiThread(() -> {
-                                Intent intent = new Intent(Splash.this, Welcome.class);
-                                startActivity(intent);
-                                finish();
-                            });
-                        }
-                    }, 0);
-                });
+                initDB();
             }
 
             @Override
@@ -61,22 +75,61 @@ public class Splash extends AppCompatActivity implements Runnable {
                 builder.show();
             }
         });
+    }
 
-//        WorkRequest uploadWorkRequest =
-//                new OneTimeWorkRequest.Builder(TestTask.class)
-//                        .addTag("Test")
-//                        .build();
-//        WorkManager
-//                .getInstance(this)
-//                .enqueue(uploadWorkRequest);
-//
-//
-//
-//        WorkManager
-//                .getInstance(this).cancelAllWorkByTag("Test");
+    private void initDB() {
+        new Thread(() -> {
+            try {
+                PlaylistDoa db = AppDatabase.getInstance(getApplicationContext()).playlistDoa();
+//                List<Post> data = db.getPostsTest();
+//                List<Playlist> da = db.getPlayListTest();
+//                List<Playlist> dd = db.getPlayListTest();
+                if(db.getPlayList().isEmpty()) {
+                    db.addPlaylist(new PlaylistWatched(this));
+                    db.addPlaylist(new PlaylistDefault(this));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                showErrorMessage(R.string.error_init_db);
+                return;
+            }
+            DownloadManager.getInstance(getApplicationContext());
+            initAD();
+        }).start();
+    }
 
-        //            Intent intent = new Intent(Splash.this, Test.class);;
-//            startActivity(intent);
-//            finish();
+    private void initAD() {
+        MobileAds.initialize(Splash.this, initializationStatus -> initCloud());
+    }
+
+    private void initCloud() {
+        FireStore.getInstance().insertLogin(new FireStore.CallbackIgnore() {
+            @Override
+            public void onProceed() {
+                done();
+            }
+        }, 0);
+    }
+
+
+    private void done() {
+        runOnUiThread(() -> {
+            Intent intent = new Intent(Splash.this, Welcome.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    public void showErrorMessage(int message) {
+        runOnUiThread(() -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Splash.this);
+            builder.setTitle(R.string.error);
+            builder.setMessage(message);
+            builder.setPositiveButton(R.string.retry_later, (dialog, which) -> {
+                finish();
+            });
+            builder.setCancelable(false);
+            builder.show();
+        });
     }
 }

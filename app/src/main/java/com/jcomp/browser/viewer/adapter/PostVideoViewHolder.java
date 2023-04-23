@@ -16,11 +16,14 @@ import com.jcomp.browser.download.db.DownloadPostDoa;
 import com.jcomp.browser.menu.Popup;
 import com.jcomp.browser.parser.post.db.PlaylistDoa;
 import com.jcomp.browser.parser.post.db.Post;
+import com.jcomp.browser.parser.post.db.PostWithPlayList;
 import com.jcomp.browser.tools.HelperFunc;
+import com.jcomp.browser.viewer.PlayListHandler;
 import com.jcomp.browser.viewer.video_loader.DownloaderLoader;
 import com.jcomp.browser.viewer.video_loader.LocalListLoader;
 import com.jcomp.browser.widget.BreathingAnim;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -89,22 +92,19 @@ public class PostVideoViewHolder extends PostViewHolderBase {
             });
         });
         mFixedThreadPool.execute(() -> {
-            PlaylistDoa db = AppDatabase.getInstance(itemView.getContext()).playlistDoa();
-            Post result = db.getByPath(post.url);
+            List<PostWithPlayList> result = PlayListHandler.checkRecordByURL(post.url, itemView.getContext());
             itemView.post(() -> {
                 if (playlistButton.getTag() != post.getKey())
                     return;
                 playlistButton.setVisibility(View.VISIBLE);
-                if (result == null) {
+                if (result.isEmpty()) {
                     playlistButton.setImageResource(R.drawable.baseline_playlist_add_24);
                     playlistButton.setColorFilter(itemView.getContext().getColor(R.color.gray));
                     playlistButton.setOnClickListener(e -> {
-                        playlistButton.setImageResource(R.drawable.baseline_playlist_add_check_24);
                         mFixedThreadPool.execute(() -> {
-                            db.insert(post);
+                            PlayListHandler.insertToDefaultPlayList(post, itemView.getContext());
                             itemView.post(() -> {
-                                HelperFunc.showToast(itemView.getContext(), R.string.playlist_added, Toast.LENGTH_LONG);
-                                adapter.notifyItemChanged(getAbsoluteAdapterPosition(), post);
+                                ((PostAdapter.ModelCallBack)openCallBack).onPlayListAdded(new PostAdapter.PlayListCallBackArgs(post, getAbsoluteAdapterPosition()));
                             });
                         });
                     });
@@ -112,13 +112,19 @@ public class PostVideoViewHolder extends PostViewHolderBase {
                     playlistButton.setImageResource(R.drawable.baseline_playlist_add_check_24);
                     playlistButton.setColorFilter(itemView.getContext().getColor(R.color.colorPrimary));
                     playlistButton.setOnClickListener(e -> {
-                        playlistButton.setImageResource(R.drawable.baseline_playlist_add_24);
                         mFixedThreadPool.execute(() -> {
-                            db.delete(result);
-                            itemView.post(() -> {
-                                adapter.notifyItemChanged(getAbsoluteAdapterPosition(), post);
-                                HelperFunc.showToast(itemView.getContext(), R.string.playlist_removed, Toast.LENGTH_LONG);
-                            });
+                            if(result.size() == 1) {
+                                PlayListHandler.remove(result.get(0), itemView.getContext());
+                                itemView.post(() -> {
+                                    ((PostAdapter.ModelCallBack)openCallBack).onPlayListRemoved(new PostAdapter.PlayListCallBackArgs(post, getAbsoluteAdapterPosition()));
+                                });
+                            } else {
+                                itemView.post(() -> {
+                                    PlayListHandler.managePlayList(itemView.getContext(), result.get(0), () -> {
+                                        ((PostAdapter.ModelCallBack)openCallBack).onPlayListAdded(new PostAdapter.PlayListCallBackArgs(post, getAbsoluteAdapterPosition()));
+                                    });
+                                });
+                            }
                         });
                     });
                 }
@@ -134,6 +140,12 @@ public class PostVideoViewHolder extends PostViewHolderBase {
                     openCallBack.onClick(new PostAdapter.VideoCallBackArgs(post, new DownloaderLoader(post, downloadButton), getAbsoluteAdapterPosition()));
                 });
             });
+        });
+        playlistButton.setOnLongClickListener(item -> {
+            PlayListHandler.managePlayList(itemView.getContext(), post, () -> {
+                ((PostAdapter.ModelCallBack)openCallBack).onPlayListAdded(new PostAdapter.PlayListCallBackArgs(post, getAbsoluteAdapterPosition()));
+            });
+            return true;
         });
         downloadButton.setOnLongClickListener(item -> {
             openCallBack.onClick(new PostAdapter.VideoCallBackArgs(post, new LocalListLoader(post, downloadButton), getAbsoluteAdapterPosition()));

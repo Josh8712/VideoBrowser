@@ -46,6 +46,16 @@ public class Post {
         this.url = url;
     }
 
+    public Post(Post post) {
+        this.title = post.title;
+        this.img = post.img;
+        this.url = post.url;
+        this.showScale = post.showScale;
+        this.viewType = post.viewType;
+        this.model = post.model;
+        this.streamName = post.streamName;
+    }
+
     public String getVideoID() {
         if (title == null)
             return null;

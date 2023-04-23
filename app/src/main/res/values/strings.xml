@@ -27,7 +27,7 @@
     <string name="bookmark_added">已加入書籤</string>
     <string name="bookmark_removed">已移除書籤</string>
 
-    <string name="playlist_added">已加入播放清單</string>
+    <string name="playlist_added">已編輯播放清單</string>
     <string name="playlist_removed">已從播放清單移除</string>
 
     <string name="open">瀏覽</string>
@@ -55,6 +55,7 @@
     <string name="failed_to_delete_video">無法移除</string>
     <string name="removed">已移除</string>
     <string name="wait_retry">等待重試</string>
+    <string name="retry_later">晚點再試試</string>
     <string name="pending">等待中</string>
     <string name="failed">發生錯誤</string>
     <string name="removing">移除中</string>
@@ -74,6 +75,18 @@
     <string name="something_went_wrong">發生錯誤，請稍後再試</string>
     <string name="copied">已複製到剪貼簿</string>
     <string name="should_browse">是否前往</string>
+    <string name="watch_history">觀看紀錄</string>
+    <string name="my_playlist">我的播放清單</string>
+    <string name="movies_in_playlist">部影片</string>
+    <string name="clear_playlist">清空播放清單</string>
+    <string name="delete_playlist">刪除播放清單</string>
+    <string name="error">錯誤</string>
+    <string name="error_init_db">資料庫初始化失敗</string>
+    <string name="add_playlist">新增播放清單</string>
+    <string name="add">新增</string>
+    <string name="empty_name_error">名稱不能為空白</string>
+    <string name="change_playlist">編輯播放清單</string>
+    <string name="ok">完成</string>
 
 
     <item name="breath_tag" type="id" />

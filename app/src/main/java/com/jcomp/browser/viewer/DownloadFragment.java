@@ -13,7 +13,7 @@ import com.jcomp.browser.parser.post.db.Post;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class DownloadFragment extends BookmarkFragment {
+public class DownloadFragment extends PlaylistContentFragment {
 
     private int observerIndicator = 0;
 

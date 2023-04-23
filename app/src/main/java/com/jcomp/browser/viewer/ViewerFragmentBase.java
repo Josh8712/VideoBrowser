@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.jcomp.browser.R;
 import com.jcomp.browser.browser.Browser;
 import com.jcomp.browser.databinding.PostFragmentBinding;
 import com.jcomp.browser.history.db.History;
@@ -29,9 +30,7 @@ import com.jcomp.browser.viewer.video_loader.ResourceLoader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public abstract class ViewerFragmentBase extends Fragment implements ParserCommonCallback {
-    private static final String LAST_POST_POSITION = "LAST_POST_POSITION";
-    private static final String LAST_PLAYING_POSITION = "LAST_PLAYING_POSITION";
+public abstract class ViewerFragmentBase extends ListBaseFragment implements ParserCommonCallback {
     private static final String LAST_HISTORY = "LAST_HISTORY";
     protected int graph_id;
     protected String rootURL;
@@ -39,7 +38,7 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
 
     protected ArrayList<String> historyURL = new ArrayList<>();
     protected PostFragmentModelView postFragmentModelView;
-    protected SwipeRefreshLayout root;
+    protected SwipeRefreshLayout refreshLayout;
     protected PostAdapter adapter;
     protected LinkedHashMap<String, Post> postList = new LinkedHashMap<>();
     protected Browser browser;
@@ -70,7 +69,7 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
             return;
         if (addToTop()) {
             if (manager.findFirstVisibleItemPosition() == 0)
-                root.postDelayed(() -> {
+                refreshLayout.postDelayed(() -> {
                     binding.content.smoothScrollToPosition(count - 1);
                 }, 10);
             adapter.notifyItemRangeInserted(0, count);
@@ -79,7 +78,6 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
         manager.setSpanCount(getSpanCount() * postList.values().iterator().next().getShowScale());
 
     };
-    protected int nowPlayingPostPos = -1;
     protected PostAdapter.ModelCallBack modelCallBack = new PostAdapter.ModelCallBack() {
         @Override
         public void onClick(PostAdapter.CallBackArgs _args) {
@@ -87,7 +85,7 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
             if (activity == null)
                 return;
             PostAdapter.VideoCallBackArgs args = ((PostAdapter.VideoCallBackArgs) _args);
-            nowPlayingPostPos = args.postPos;
+            selectedPosition = args.postPos;
             if (args.post.isVideo())
                 loadVideo(args.resourceLoader);
             else
@@ -102,15 +100,38 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
             Model model = ((PostAdapter.ModelCallBackArgs) _args).model;
             activity.subNavigate(model.name, model.url, graph_id);
         }
+
+        @Override
+        public void onPlayListAdded(PostAdapter.CallBackArgs _args) {
+            PostAdapter.PlayListCallBackArgs args = ((PostAdapter.PlayListCallBackArgs) _args);
+            MainActivity activity = (MainActivity) getActivity();
+            if (activity == null)
+                return;
+            adapter.notifyItemChanged(args.postPos);
+            Snackbar snackbar = Snackbar.make(binding.getRoot(), getText(R.string.playlist_added).toString(), Snackbar.LENGTH_LONG);
+            snackbar.setAction(R.string.change_playlist, v -> {
+                PlayListHandler.managePlayList(activity, args.post, () -> {
+                    adapter.notifyItemChanged(args.postPos);
+                });
+            });
+            snackbar.show();
+        }
+
+        @Override
+        public void onPlayListRemoved(PostAdapter.CallBackArgs _args) {
+            PostAdapter.PlayListCallBackArgs args = ((PostAdapter.PlayListCallBackArgs) _args);
+            MainActivity activity = (MainActivity) getActivity();
+            if (activity == null)
+                return;
+            adapter.notifyItemChanged(args.postPos);
+            Snackbar.make(binding.getRoot(), getText(R.string.playlist_removed).toString(), Snackbar.LENGTH_SHORT).show();
+        }
     };
-    private int lastPosition = -1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            lastPosition = savedInstanceState.getInt(LAST_POST_POSITION, -1);
-            nowPlayingPostPos = savedInstanceState.getInt(LAST_PLAYING_POSITION, -1);
             String json = savedInstanceState.getString(LAST_HISTORY);
             if (json != null)
                 currentHistory = new Gson().fromJson(json, History.class);
@@ -122,13 +143,13 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
         binding = PostFragmentBinding.inflate(inflater, container, false);
         graph_id = PostFragmentArgs.fromBundle(getArguments()).getGRAPHIDKEY();
         rootURL = PostFragmentArgs.fromBundle(getArguments()).getROOTURLKEY();
-        root = binding.getRoot();
+        refreshLayout = binding.refresh;
 
         postFragmentModelView =
                 new ViewModelProvider(this).get(PostFragmentModelView.class);
         MainActivity activity = (MainActivity) getActivity();
         if (activity == null)
-            return root;
+            return binding.getRoot();
 
 
         updateHistory(currentHistory);
@@ -144,9 +165,9 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
 
         browser = activity.getBrowserHolder();
         postFragmentModelView.getmPost().observe(getViewLifecycleOwner(), postObserver);
-        root.setOnRefreshListener(this::reload);
+        refreshLayout.setOnRefreshListener(this::reload);
 
-        return root;
+        return binding.getRoot();
     }
 
     protected void updateHistory(History history) {
@@ -196,7 +217,6 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(LAST_POST_POSITION, lastPosition);
         if (currentHistory != null) {
             Gson gson = new Gson();
             String json = gson.toJson(currentHistory);
@@ -204,8 +224,6 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
         } else {
             outState.putString(LAST_HISTORY, null);
         }
-        outState.putInt(LAST_PLAYING_POSITION, nowPlayingPostPos);
-
     }
 
     abstract protected boolean addToTop();
@@ -216,7 +234,7 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
         binding.empty.setVisibility(View.GONE);
         binding.content.setVisibility(View.INVISIBLE);
         binding.pager.setVisibility(View.GONE);
-        root.setRefreshing(true);
+        refreshLayout.setRefreshing(true);
         loadMore();
     }
 
@@ -233,8 +251,8 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
 
     @Override
     public void parseFinished() {
-        root.post(() -> {
-            root.setRefreshing(false);
+        refreshLayout.post(() -> {
+            refreshLayout.setRefreshing(false);
             if (resourceLoader != null)
                 resourceLoader.parseFinished();
             if (postList.isEmpty()) {
@@ -250,16 +268,19 @@ public abstract class ViewerFragmentBase extends Fragment implements ParserCommo
         return true;
     }
 
+    @Override
     public boolean canGoBack() {
         return !historyURL.isEmpty();
     }
 
+    @Override
     public void goBack() {
         if (!historyURL.isEmpty())
             historyURL.remove(historyURL.get(historyURL.size() - 1));
         reload();
     }
 
+    @Override
     public void goHome() {
         historyURL.clear();
         reload();
