@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Browser.NoActionBar"
+        tools:targetApi="31">
+        <activity
+            android:name=".splash.Splash"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".welcome.Welcome" />
+        <activity
+            android:name=".main.MainActivity"
+            android:parentActivityName=".welcome.Welcome" />
+        <activity
+            android:name=".browser.BrowserActivity"
+            android:exported="true"
+            android:parentActivityName=".welcome.Welcome">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.APP_BROWSER" />
+
+                <data android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".player.Player" />
+        <activity
+            android:name=".setting.Setting"
+            android:theme="@style/Theme.Browser.Tint" />
+
+        <receiver
+            android:name=".download.DownloadTaskReceiver"
+            android:enabled="true" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6011993222723455~6665885008" />
+    </application>
+
+</manifest>

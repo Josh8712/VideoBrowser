@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "197479296364",
+    "project_id": "browser-eea6e",
+    "storage_bucket": "browser-eea6e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197479296364:android:a05f17892cb00ec347d749",
+        "android_client_info": {
+          "package_name": "com.jcomp.browser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "197479296364-turf4edl59uj82523fo9464gkajevcub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-Hu1Obp4aIHaKL4JGA4i9xfpFj2VP-Y8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197479296364-turf4edl59uj82523fo9464gkajevcub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

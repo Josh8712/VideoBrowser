@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    app:startDestination="@+id/home_graph">
+    <navigation
+        android:id="@+id/home_graph"
+        app:startDestination="@+id/nav_home">
+        <fragment
+            android:id="@+id/nav_home"
+            android:name="com.jcomp.browser.viewer.PostFragment"
+            android:label="@string/menu_home">
+            <argument
+                android:name="ROOT_URL_KEY"
+                app:argType="string" />
+            <argument
+                android:name="GRAPH_ID_KEY"
+                app:argType="integer" />
+        </fragment>
+    </navigation>
+
+    <navigation
+        android:id="@+id/playlist_graph"
+        app:startDestination="@+id/nav_bookmark">
+        <fragment
+            android:id="@+id/nav_bookmark"
+            android:name="com.jcomp.browser.viewer.BookmarkFragment"
+            android:label="@string/playlist" />
+    </navigation>
+
+    <navigation
+        android:id="@+id/download_graph"
+        app:startDestination="@+id/nav_download">
+        <fragment
+            android:id="@+id/nav_download"
+            android:name="com.jcomp.browser.viewer.DownloadFragment"
+            android:label="@string/download" />
+    </navigation>
+</navigation>

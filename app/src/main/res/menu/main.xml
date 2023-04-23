@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/baseline_search_24"
+        android:orderInCategory="100"
+        android:title="@string/search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_add_bookmark"
+        android:icon="@drawable/baseline_bookmark_border_24"
+        android:orderInCategory="100"
+        android:title="@string/action_add_bookmark"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_preview_toggle"
+        android:icon="@drawable/ic_baseline_cameraswitch_24"
+        android:orderInCategory="100"
+        android:title="@string/action_toggle_previewer"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_change_root"
+        android:icon="@drawable/ic_baseline_exit_to_app_24"
+        android:orderInCategory="100"
+        android:title="@string/go_back"
+        app:showAsAction="ifRoom" />
+</menu>

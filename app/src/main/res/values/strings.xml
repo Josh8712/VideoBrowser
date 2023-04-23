@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_version">0.0.1</string>
+    <string name="app_name">JC瀏覽器</string>
+    <string name="version">版本</string>
+    <string name="keyword_hint">關鍵字</string>
+    <string name="download">我的下載</string>
+    <string name="setting">設定</string>
+    <string name="playlist">播放清單</string>
+
+    <string name="reload">重新載入</string>
+    <string name="open_in_browser">在預設瀏覽器中開啟</string>
+    <string name="select_open_tool">選擇瀏覽器</string>
+    <string name="share_to">分享</string>
+
+    <string name="go_back">返回</string>
+    <string name="action_toggle_previewer">切換瀏覽器顯示</string>
+
+    <string name="menu_home">首頁</string>
+    <string name="tags">標籤</string>
+    <string name="search">搜尋</string>
+
+    <string name="loading">載入中</string>
+    <string name="no_data">沒有資料</string>
+
+    <string name="action_add_bookmark">加入書籤</string>
+    <string name="action_remove_bookmark">移除書籤</string>
+    <string name="bookmark_added">已加入書籤</string>
+    <string name="bookmark_removed">已移除書籤</string>
+
+    <string name="playlist_added">已加入播放清單</string>
+    <string name="playlist_removed">已從播放清單移除</string>
+
+    <string name="open">瀏覽</string>
+    <string name="name">名稱</string>
+    <string name="edit_name">編輯名稱</string>
+    <string name="copy_url">複製網址</string>
+    <string name="delete">移除</string>
+
+    <string name="choose_video">選擇片源</string>
+    <string name="choose_model">選擇主演</string>
+
+
+    <string name="previous">上一頁</string>
+    <string name="next">下一頁</string>
+
+    <string name="play">播放</string>
+    <string name="pause">暫停</string>
+    <string name="resume">繼續</string>
+
+    <string name="download_not_found">尚未下載</string>
+    <string name="already_download">已完成下載</string>
+    <string name="failed_to_load_video">無法載入</string>
+    <string name="failed_to_play_video">無法播放</string>
+    <string name="failed_to_play_undone_video">檔案發生錯誤或正在下載</string>
+    <string name="failed_to_delete_video">無法移除</string>
+    <string name="removed">已移除</string>
+    <string name="wait_retry">等待重試</string>
+    <string name="pending">等待中</string>
+    <string name="failed">發生錯誤</string>
+    <string name="removing">移除中</string>
+    <string name="cancel">取消</string>
+    <string name="list_video">影片列表</string>
+    <string name="report">意見回報</string>
+    <string name="clear_cache">清除緩存</string>
+    <string name="enter_report_advice">輸入建議或回報錯誤</string>
+    <string name="type_here">請輸入…</string>
+    <string name="submit">送出</string>
+    <string name="enter_email">請輸入聯絡信箱</string>
+    <string name="enter_email_optional">請輸入聯絡信箱 (選填)</string>
+    <string name="update_required">需要更新</string>
+    <string name="force_update_message">有一個新版本，請更新以繼續使用應用程序</string>
+    <string name="update">更新</string>
+    <string name="report_success">我們已收到您的訊息，感謝您的建議和回饋</string>
+    <string name="something_went_wrong">發生錯誤，請稍後再試</string>
+    <string name="copied">已複製到剪貼簿</string>
+    <string name="should_browse">是否前往</string>
+
+
+    <item name="breath_tag" type="id" />
+
+</resources>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:selectableItemBackground"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:background="@android:color/transparent">
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_fill" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="12dp">
+
+                <ImageButton
+                    android:id="@+id/playlist_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:adjustViewBounds="true"
+                    android:background="?android:selectableItemBackgroundBorderless"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/baseline_playlist_add_24"
+                    app:tint="@color/gray" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="62dp"
+            android:background="@android:color/transparent">
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_fill" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="12dp">
+
+                <ImageButton
+                    android:id="@+id/download_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:adjustViewBounds="true"
+                    android:background="?android:selectableItemBackgroundBorderless"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_baseline_download_24"
+                    app:tint="@color/gray" />
+            </FrameLayout>
+        </FrameLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>

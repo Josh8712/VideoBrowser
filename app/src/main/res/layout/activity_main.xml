@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_host_fragment_content_main"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/design_default_color_background"
+            app:defaultNavHost="true" />
+
+        <include
+            android:id="@+id/browser_holder"
+            layout="@layout/browser"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <com.jcomp.browser.widget.MyBottomDrawer
+        android:id="@+id/bottom_navigation_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        app:behavior_hideable="false"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/activity_main_drawer" />
+
+    </com.jcomp.browser.widget.MyBottomDrawer>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

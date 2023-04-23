@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/design_default_color_background"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginVertical="10dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_launcher" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/welcome_page_padding"
+            android:background="@drawable/round_corner_large_fill"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.jcomp.browser.widget.HideEditText
+                android:id="@+id/keyword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/keyword_hint"
+                android:minEms="6"
+                android:paddingVertical="10dp"
+                android:paddingStart="@dimen/round_corner_large"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="?colorOnPrimary" />
+
+            <ImageButton
+                android:id="@+id/clear_input_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/baseline_cancel_24"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/query"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/baseline_send_24"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/history"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="40dp"
+                android:overScrollMode="never"
+                android:paddingHorizontal="@dimen/welcome_page_padding" />
+        </LinearLayout>
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-6011993222723455/1276954814"></com.google.android.gms.ads.AdView>
+    </LinearLayout>
+</FrameLayout>

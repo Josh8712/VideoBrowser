@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.jcomp.browser.browser.Browser
+        android:id="@+id/browser"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/home"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:adjustViewBounds="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:paddingHorizontal="10dp"
+                android:scaleType="fitCenter"
+                android:scaleX="-1"
+                android:src="@drawable/ic_baseline_exit_to_app_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/round_corner_large_fill"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.jcomp.browser.widget.HideEditText
+                    android:id="@+id/url"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/keyword_hint"
+                    android:minEms="6"
+                    android:paddingHorizontal="@dimen/round_corner_large"
+                    android:paddingVertical="10dp"
+                    android:paddingEnd="20dp"
+                    android:scrollHorizontally="true"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true" />
+
+                <ImageButton
+                    android:id="@+id/clear_input_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:padding="8dp"
+                    android:src="@drawable/baseline_cancel_24" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/bookmark_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:paddingHorizontal="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/baseline_bookmark_border_24"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/option"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:paddingHorizontal="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/baseline_more_vert_24" />
+        </LinearLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.jcomp.browser.browser.Browser>
+
+    <com.jcomp.browser.widget.DraggableButton
+        android:id="@+id/video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:drawableStart="@drawable/baseline_play_arrow_24"
+        android:text="@string/play"
+        app:layout_constraintBottom_toTopOf="@id/list"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.jcomp.browser.widget.DraggableButton
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:drawableStart="@drawable/baseline_format_list_bulleted_24"
+        android:text="@string/list_video"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
