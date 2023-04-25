@@ -18,20 +18,13 @@
         tools:targetApi="31">
         <activity
             android:name=".splash.Splash"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".welcome.Welcome" />
-        <activity
-            android:name=".main.MainActivity"
-            android:parentActivityName=".welcome.Welcome" />
-        <activity
-            android:name=".browser.BrowserActivity"
-            android:exported="true"
-            android:parentActivityName=".welcome.Welcome">
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -41,7 +34,15 @@
 
                 <data android:scheme="https" />
             </intent-filter>
+
         </activity>
+        <activity android:name=".welcome.Welcome"
+            android:parentActivityName=".splash.Splash"/>
+        <activity
+            android:name=".main.MainActivity"
+            android:parentActivityName=".welcome.Welcome" />
+        <activity android:name=".browser.BrowserActivity"
+            android:parentActivityName=".welcome.Welcome"/>
         <activity android:name=".player.Player" />
         <activity
             android:name=".setting.Setting"

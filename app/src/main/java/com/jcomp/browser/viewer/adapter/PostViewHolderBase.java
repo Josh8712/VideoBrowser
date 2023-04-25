@@ -28,10 +28,9 @@ public abstract class PostViewHolderBase extends RecyclerView.ViewHolder {
 
     public void bind(Post post, PostAdapter.CallBack openCallBack, PostAdapter adapter) {
         if (post.img == null || post.img.isEmpty()) {
-            pic.setVisibility(View.GONE);
+            pic.setImageResource(R.drawable.gallery_placeholder);
         } else {
-            pic.setVisibility(View.VISIBLE);
-            Picasso.get().load(post.img).placeholder(R.drawable.gallery_placeholder).into(pic);
+            Picasso.get().load(post.img).placeholder(R.drawable.gallery_placeholder).error(R.drawable.gallery_placeholder).into(pic);
         }
 
         if (post.getTitle() != null) {

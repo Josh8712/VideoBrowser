@@ -6,6 +6,6 @@ public class ImageTag extends Tag {
     public ImageTag(String title, String img, @NonNull String url) {
         super(title, img, url);
         showScale = 2;
-        viewType = 3;
+        viewType = TYPE_IMAGE_TAG;
     }
 }

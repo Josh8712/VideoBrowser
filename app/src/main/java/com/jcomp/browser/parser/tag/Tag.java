@@ -7,7 +7,7 @@ import com.jcomp.browser.parser.post.db.Post;
 public class Tag extends Post {
     public Tag(String title, String img, @NonNull String url) {
         super(title, img, url);
-        viewType = 1;
+        viewType = TYPE_TAG;
     }
 
     public Tag(String title, @NonNull String url) {

@@ -16,6 +16,15 @@ import java.util.regex.Pattern;
 
 @Entity
 public class Post {
+    @Ignore
+    public static final int TYPE_TAG = 1;
+    @Ignore
+    public static final int TYPE_DOWNLOAD = 2;
+    @Ignore
+    public static final int TYPE_IMAGE_TAG = 3;
+    public static final int TYPE_POST = -1;
+
+
     @PrimaryKey(autoGenerate = true)
     public long uid;
 
@@ -51,7 +60,7 @@ public class Post {
         this.img = post.img;
         this.url = post.url;
         this.showScale = post.showScale;
-        this.viewType = post.viewType;
+        this.viewType = TYPE_POST;
         this.model = post.model;
         this.streamName = post.streamName;
     }

@@ -176,6 +176,11 @@ public class Welcome extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     private void fakeHistory() {
         if (!AppDatabase.getInstance(this).historyDoa().getAll().isEmpty())
             return;

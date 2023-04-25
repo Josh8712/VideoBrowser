@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -59,6 +61,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -232,43 +235,69 @@ public class Browser extends LinearLayout {
             private long checkFlag;
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                if (getVisibility() != VISIBLE)
-                    return false;
-                try {
-                    if (new URL(request.getUrl().toString()).getHost().equals(new URL(url).getHost()))
-                        return false;
-                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    //Yes button clicked
-                                    view.loadUrl(request.getUrl().toString());
-                                    break;
+            public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+                super.doUpdateVisitedHistory(view, url, isReload);
+                setURL(url);
+                checkFlag = dirtyFlag;
+            }
 
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    //No button clicked
-                                    break;
+            private boolean handleIntent(String url) {
+                if (url.startsWith("intent://")) {
+                    try {
+                        Context context = getContext();
+                        Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                        if (intent != null) {
+                            PackageManager packageManager = context.getPackageManager();
+                            ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                            if (info != null) {
+                                context.startActivity(intent);
+                            } else {
+                                String fallbackUrl = intent.getStringExtra("browser_fallback_url");
+                                loadUrl(fallbackUrl, false);
                             }
+                            return true;
                         }
-                    };
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle(R.string.should_browse).setMessage(request.getUrl().toString()).setPositiveButton("Yes", dialogClickListener)
-                            .setNegativeButton("No", dialogClickListener).show();
-                    return true;
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return false;
             }
 
             @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (getVisibility() != VISIBLE)
+                    return true;
+                try {
+                    if (new URL(request.getUrl().toString()).getHost().equals(new URL(url).getHost()))
+                        return false;
+                    DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                view.loadUrl(request.getUrl().toString());
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle(R.string.should_browse).setMessage(request.getUrl().toString())
+                            .setPositiveButton(R.string.yes, dialogClickListener)
+                            .setNegativeButton(R.string.no, dialogClickListener).show();
+                    return true;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    return handleIntent(request.getUrl().toString());
+                }
+            }
+
+            @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                setURL(url);
-                checkFlag = dirtyFlag;
                 refreshLayout.setRefreshing(true);
             }
 
@@ -350,6 +379,8 @@ public class Browser extends LinearLayout {
     }
 
     public void loadUrl(String url, boolean cleanHistory) {
+        if(url == null || url.isEmpty())
+            return;
         prepareNewPage(url);
         url = url.trim();
         if (!Patterns.WEB_URL.matcher(url).matches())

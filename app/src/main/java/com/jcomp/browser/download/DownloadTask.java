@@ -26,6 +26,7 @@ import com.jcomp.browser.download.video.HLSDownloadHandler;
 import com.jcomp.browser.download.video.Mp4DownloadHandler;
 import com.jcomp.browser.history.HistoryDownload;
 import com.jcomp.browser.main.MainActivity;
+import com.jcomp.browser.splash.Splash;
 import com.jcomp.browser.tools.HelperFunc;
 import com.jcomp.browser.tools.Notification;
 import com.jcomp.browser.viewer.video_loader.LocalLoader;
@@ -146,21 +147,17 @@ public class DownloadTask extends Worker {
     }
 
     private Intent getDownloadPageIntent() {
-        Intent downloadIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent downloadIntent = new Intent(getApplicationContext(), Splash.class);
         downloadIntent.putExtra(Welcome.HISTORY_INTENT_KEY, new Gson().toJson(new HistoryDownload(getApplicationContext())));
-        downloadIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        downloadIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return downloadIntent;
     }
 
     private PendingIntent getPlayIntent() {
-        Intent intent = LocalLoader.getPlayDownloadedIntent(getApplicationContext(), downloadPost);
+        Intent intent = LocalLoader.getPlayDownloadedIntent(getApplicationContext(), downloadPost, Splash.class);
         if (intent == null)
             return null;
-        Intent downloadIntent = getDownloadPageIntent();
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-        stackBuilder.addNextIntentWithParentStack(downloadIntent);
-        stackBuilder.addNextIntent(intent);
-        return stackBuilder.getPendingIntent((int) getDownloadPost().uid,
+        return PendingIntent.getActivity(getApplicationContext(), (int) getDownloadPost().uid, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
@@ -172,10 +169,6 @@ public class DownloadTask extends Worker {
         String pause = getApplicationContext().getString(R.string.pause);
         String play = getApplicationContext().getString(R.string.play);
         if (notificationBuilder == null) {
-
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-            stackBuilder.addNextIntentWithParentStack(getDownloadPageIntent());
-
             Notification.createDownloadChannel(getApplicationContext());
             notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), Notification.DOWNLOAD_CHANNEL_ID)
                     .setContentTitle(title)
@@ -184,7 +177,7 @@ public class DownloadTask extends Worker {
                     .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                     .setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(downloadPost.getTitle()))
-                    .setContentIntent(stackBuilder.getPendingIntent(Notification.DOWNLOAD_PAGE_INTENT_ID, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE))
+                    .setContentIntent(PendingIntent.getActivity(getApplicationContext(), Notification.DOWNLOAD_PAGE_INTENT_ID, getDownloadPageIntent(), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE))
                     .addAction(android.R.drawable.ic_delete, pause, getCancelIntent());
         }
         if (playIntent == null) {

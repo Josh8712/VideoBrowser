@@ -13,44 +13,38 @@ import com.jcomp.browser.R;
 import com.jcomp.browser.cloud.FireStore;
 import com.jcomp.browser.databinding.ActivitySplashBinding;
 import com.jcomp.browser.download.DownloadManager;
-import com.jcomp.browser.parser.post.db.Playlist;
 import com.jcomp.browser.parser.post.db.PlaylistDefault;
 import com.jcomp.browser.parser.post.db.PlaylistDoa;
-import com.jcomp.browser.parser.post.db.PlaylistRecord;
 import com.jcomp.browser.parser.post.db.PlaylistWatched;
-import com.jcomp.browser.parser.post.db.Post;
+import com.jcomp.browser.player.Player;
 import com.jcomp.browser.welcome.Welcome;
-import com.jcomp.browser.widget.BreathingAnim;
 
-import java.util.List;
 
 public class Splash extends AppCompatActivity implements Runnable {
+
+    BaseAction action = new BaseAction(this);
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final ActivitySplashBinding binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        if(!wasLaunchedFromRecent()) {
+            Intent intent = getIntent();
+            if (intent != null) {
+                if(intent.hasExtra(Welcome.HISTORY_INTENT_KEY)) {
+                    action = new DownloadPageAction(intent.getStringExtra(Welcome.HISTORY_INTENT_KEY), this);
+                } else if(intent.hasExtra(Player.PLAYER_INFO_KEY)) {
+                    action = new PlayerAction(intent.getStringExtra(Player.PLAYER_INFO_KEY), this);
+                } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+                    String url = intent.getData().toString();
+                    action = new BrowserAction(url, this);
+                }
+            }
+        }
         new Thread(this).start();
     }
-
     @Override
     public void run() {
         checkVersion();
-//        WorkRequest uploadWorkRequest =
-//                new OneTimeWorkRequest.Builder(TestTask.class)
-//                        .addTag("Test")
-//                        .build();
-//        WorkManager
-//                .getInstance(this)
-//                .enqueue(uploadWorkRequest);
-//
-//
-//
-//        WorkManager
-//                .getInstance(this).cancelAllWorkByTag("Test");
-
-        //            Intent intent = new Intent(Splash.this, Test.class);;
-//            startActivity(intent);
-//            finish();
     }
 
     private void checkVersion() {
@@ -81,9 +75,6 @@ public class Splash extends AppCompatActivity implements Runnable {
         new Thread(() -> {
             try {
                 PlaylistDoa db = AppDatabase.getInstance(getApplicationContext()).playlistDoa();
-//                List<Post> data = db.getPostsTest();
-//                List<Playlist> da = db.getPlayListTest();
-//                List<Playlist> dd = db.getPlayListTest();
                 if(db.getPlayList().isEmpty()) {
                     db.addPlaylist(new PlaylistWatched(this));
                     db.addPlaylist(new PlaylistDefault(this));
@@ -108,15 +99,20 @@ public class Splash extends AppCompatActivity implements Runnable {
             public void onProceed() {
                 done();
             }
-        }, 0);
+        }, 0, this);
     }
 
 
     private void done() {
         runOnUiThread(() -> {
-            Intent intent = new Intent(Splash.this, Welcome.class);
-            startActivity(intent);
+            if(action != null) {
+                action.run();
+            } else {
+                Intent intent = new Intent(Splash.this, Welcome.class);
+                startActivity(intent);
+            }
             finish();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }
 
@@ -131,5 +127,11 @@ public class Splash extends AppCompatActivity implements Runnable {
             builder.setCancelable(false);
             builder.show();
         });
+    }
+
+    protected boolean wasLaunchedFromRecent() {
+        if(getIntent() == null)
+            return true;
+        return (getIntent().getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY;
     }
 }

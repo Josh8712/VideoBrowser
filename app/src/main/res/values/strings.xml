@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_version">0.0.1</string>
     <string name="app_name">JC瀏覽器</string>
     <string name="version">版本</string>
     <string name="keyword_hint">關鍵字</string>
@@ -87,6 +86,8 @@
     <string name="empty_name_error">名稱不能為空白</string>
     <string name="change_playlist">編輯播放清單</string>
     <string name="ok">完成</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
 
 
     <item name="breath_tag" type="id" />

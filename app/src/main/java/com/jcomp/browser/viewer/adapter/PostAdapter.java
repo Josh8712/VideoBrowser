@@ -55,11 +55,11 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Post post = getItem(position);
-        if (getItemViewType(position) == 1)
+        if (getItemViewType(position) == Post.TYPE_TAG)
             ((TagViewHolder) holder).bind(post, openCallBack);
-        else if (getItemViewType(position) == 2)
+        else if (getItemViewType(position) == Post.TYPE_DOWNLOAD)
             ((PostDownloadViewHolder) holder).bind(post, openCallBack, this);
-        else if (getItemViewType(position) == 3)
+        else if (getItemViewType(position) == Post.TYPE_IMAGE_TAG)
             ((TagViewHolder) holder).bind(post, openCallBack);
         else
             ((PostVideoViewHolder) holder).bind(post, openCallBack, this);

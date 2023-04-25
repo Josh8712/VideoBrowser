@@ -34,7 +34,7 @@ public class DownloadPost extends Post {
         this.videoPath = playerInfo.videoURL;
         this.previewPath = playerInfo.previewURL;
         this.status = Status.PENDING;
-        viewType = 2;
+        viewType = TYPE_DOWNLOAD;
     }
 
     public void setProgress(float progress) {
