@@ -52,7 +52,7 @@ import com.jcomp.browser.parser.player.ScriptPlayer;
 import com.jcomp.browser.parser.post.db.Post;
 import com.jcomp.browser.parser.tag.ScriptTag;
 import com.jcomp.browser.player.Player;
-import com.jcomp.browser.player.PlayerInfo;
+import com.jcomp.browser.player.VideoPlayerInfo;
 import com.jcomp.browser.tools.HelperFunc;
 import com.jcomp.browser.widget.HideEditText;
 
@@ -75,7 +75,7 @@ import okhttp3.Response;
 public class Browser extends LinearLayout {
     public final static String BLANK_URL = "about:blank";
     static final int CHECK_INTERVAL = 1000;
-    PlayerInfo playerInfo = new PlayerInfo();
+    VideoPlayerInfo playerInfo = new VideoPlayerInfo();
     String url = "";
     boolean dirty = true;
     boolean fragmentReady = false;
@@ -454,7 +454,7 @@ public class Browser extends LinearLayout {
         dirty = true;
         playVideo.setVisibility(GONE);
         listVideo.setVisibility(GONE);
-        playerInfo = new PlayerInfo();
+        playerInfo = new VideoPlayerInfo();
     }
 
     public void setFragmentReady(boolean fragmentReady) {
@@ -550,6 +550,7 @@ public class Browser extends LinearLayout {
         Parser parser = new Parser(location, html);
         ModelCache cache = ModelCache.getSingleton(getContext());
         LinkedHashMap<String, Post> posts = parser.getPost();
+        posts.putAll(parser.getComic());
         for (Post post : posts.values()) {
             post.set_model(cache.getModel(post.url));
         }

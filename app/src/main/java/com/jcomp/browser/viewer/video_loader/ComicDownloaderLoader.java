@@ -1,37 +1,30 @@
 package com.jcomp.browser.viewer.video_loader;
 
+import android.content.Context;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.jcomp.browser.R;
+import com.jcomp.browser.comic.ComicPlayerInfo;
 import com.jcomp.browser.download.DownloadManager;
 import com.jcomp.browser.download.db.DownloadPost;
 import com.jcomp.browser.parser.post.db.Post;
-import com.jcomp.browser.player.VideoPlayerInfo;
+import com.jcomp.browser.player.PlayerInfo;
 import com.jcomp.browser.tools.HelperFunc;
+import com.jcomp.browser.viewer.ViewerFragmentBase;
 import com.jcomp.browser.widget.BreathingAnim;
 
-public class DownloaderLoader extends VideoLoader {
+public class ComicDownloaderLoader extends ResourceLoader {
     ImageButton downloadButton;
 
-    public DownloaderLoader(Post post, ImageButton downloadButton) {
+    public ComicDownloaderLoader(Post post, ImageButton downloadButton) {
         super(post);
         this.downloadButton = downloadButton;
     }
 
     @Override
-    void showError() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        } else
-            return;
-        HelperFunc.showToast(getContext(), R.string.failed_to_load_video, Toast.LENGTH_SHORT);
-    }
-
-    @Override
-    void callback(String videoURL, String previewURL) {
-        VideoPlayerInfo playerInfo = new VideoPlayerInfo(videoURL, playerURL, previewURL, new Gson().fromJson(new Gson().toJson(post), Post.class), VideoPlayerInfo.PlayerType.ONLINE);
+    public void start(ViewerFragmentBase postFragment) {
+        PlayerInfo playerInfo = new ComicPlayerInfo(post, ComicPlayerInfo.PlayerType.ONLINE);
         new Thread(() -> {
             DownloadManager manager = DownloadManager.getInstance(getContext());
             DownloadPost downloadPost = manager.getRecord(playerInfo);
@@ -52,5 +45,14 @@ public class DownloaderLoader extends VideoLoader {
                 }
             });
         }).start();
+    }
+
+    private Context getContext() {
+        return downloadButton.getContext();
+    }
+
+    @Override
+    void showError() {
+
     }
 }

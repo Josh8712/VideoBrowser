@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jcomp.browser.R;
 import com.jcomp.browser.parser.post.db.Post;
+import com.jcomp.browser.viewer.video_loader.ComicLoader;
+import com.jcomp.browser.viewer.video_loader.ResourceLoader;
 import com.jcomp.browser.viewer.video_loader.VideoLoader;
 import com.squareup.picasso.Picasso;
 
@@ -63,7 +65,12 @@ public abstract class PostViewHolderBase extends RecyclerView.ViewHolder {
 
 
         itemView.setOnClickListener(view -> {
-            openCallBack.onClick(new PostAdapter.VideoCallBackArgs(post, new VideoLoader(post), getAbsoluteAdapterPosition()));
+            ResourceLoader loader;
+            if((post.getViewType() & Post.TYPE_COMIC) == Post.TYPE_COMIC)
+                loader = new ComicLoader(post);
+            else
+                loader = new VideoLoader(post);
+            openCallBack.onClick(new PostAdapter.VideoCallBackArgs(post, loader, getAbsoluteAdapterPosition()));
         });
     }
 }

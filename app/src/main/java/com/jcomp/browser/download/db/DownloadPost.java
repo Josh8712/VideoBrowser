@@ -5,6 +5,7 @@ import androidx.room.Ignore;
 
 import com.jcomp.browser.parser.post.db.Post;
 import com.jcomp.browser.player.PlayerInfo;
+import com.jcomp.browser.player.VideoPlayerInfo;
 
 @Entity
 public class DownloadPost extends Post {
@@ -27,6 +28,17 @@ public class DownloadPost extends Post {
     }
 
     @Ignore
+    public DownloadPost(VideoPlayerInfo playerInfo, String localPath) {
+        super(playerInfo.post.title, playerInfo.post.streamName, playerInfo.post.img, playerInfo.post.url);
+        this.localPath = localPath;
+        this.playerPath = playerInfo.playerURL;
+        this.videoPath = playerInfo.videoURL;
+        this.previewPath = playerInfo.previewURL;
+        this.status = Status.PENDING;
+        viewType = TYPE_DOWNLOAD | playerInfo.post.getViewType();
+    }
+
+    @Ignore
     public DownloadPost(PlayerInfo playerInfo, String localPath) {
         super(playerInfo.post.title, playerInfo.post.streamName, playerInfo.post.img, playerInfo.post.url);
         this.localPath = localPath;
@@ -34,7 +46,7 @@ public class DownloadPost extends Post {
         this.videoPath = playerInfo.videoURL;
         this.previewPath = playerInfo.previewURL;
         this.status = Status.PENDING;
-        viewType = TYPE_DOWNLOAD;
+        viewType = TYPE_DOWNLOAD | playerInfo.post.getViewType();
     }
 
     public void setProgress(float progress) {

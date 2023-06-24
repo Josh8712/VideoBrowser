@@ -44,6 +44,7 @@
         <activity android:name=".browser.BrowserActivity"
             android:parentActivityName=".welcome.Welcome"/>
         <activity android:name=".player.Player" />
+        <activity android:name=".comic.ComicPlayer" />
         <activity
             android:name=".setting.Setting"
             android:theme="@style/Theme.Browser.Tint" />

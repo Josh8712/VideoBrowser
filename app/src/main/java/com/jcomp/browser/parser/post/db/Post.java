@@ -17,12 +17,13 @@ import java.util.regex.Pattern;
 @Entity
 public class Post {
     @Ignore
-    public static final int TYPE_TAG = 1;
+    public static final int TYPE_TAG = 1 << 1;
     @Ignore
-    public static final int TYPE_DOWNLOAD = 2;
+    public static final int TYPE_DOWNLOAD = 1 << 2;
     @Ignore
-    public static final int TYPE_IMAGE_TAG = 3;
-    public static final int TYPE_POST = -1;
+    public static final int TYPE_IMAGE_TAG = 1 << 3;
+    public static final int TYPE_COMIC = 1 << 4;
+    public static final int TYPE_POST = 1 << 5;
 
 
     @PrimaryKey(autoGenerate = true)
@@ -32,7 +33,7 @@ public class Post {
     public String img;
     public String url;
     public int showScale = 1;
-    public int viewType = -1;
+    public int viewType = TYPE_POST;
 
     public Model[] model;
     public String streamName;
@@ -55,12 +56,21 @@ public class Post {
         this.url = url;
     }
 
+    @Ignore
+    public Post(String title, String img, @NonNull String url, int viewType) {
+        this.title = title;
+        this.img = img;
+        this.url = url;
+        this.viewType = viewType;
+    }
+
     public Post(Post post) {
         this.title = post.title;
         this.img = post.img;
         this.url = post.url;
         this.showScale = post.showScale;
-        this.viewType = TYPE_POST;
+        this.viewType = post.getViewType();
+        this.viewType &= ~TYPE_DOWNLOAD;
         this.model = post.model;
         this.streamName = post.streamName;
     }

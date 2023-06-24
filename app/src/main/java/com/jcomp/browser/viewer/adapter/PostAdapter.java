@@ -43,11 +43,11 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == 1)
+        if ((viewType & Post.TYPE_IMAGE_TAG) == Post.TYPE_IMAGE_TAG)
             return new TagViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_tag, parent, false));
-        else if (viewType == 2)
+        else if ((viewType & Post.TYPE_DOWNLOAD) == Post.TYPE_DOWNLOAD)
             return new PostDownloadViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_download, parent, false));
-        else if (viewType == 3)
+        else if ((viewType & Post.TYPE_TAG) == Post.TYPE_TAG)
             return new TagViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_image_tag, parent, false));
         return new PostVideoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_post, parent, false));
     }
@@ -55,13 +55,11 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Post post = getItem(position);
-        if (getItemViewType(position) == Post.TYPE_TAG)
+        if(holder instanceof TagViewHolder)
             ((TagViewHolder) holder).bind(post, openCallBack);
-        else if (getItemViewType(position) == Post.TYPE_DOWNLOAD)
+        else if (holder instanceof PostDownloadViewHolder)
             ((PostDownloadViewHolder) holder).bind(post, openCallBack, this);
-        else if (getItemViewType(position) == Post.TYPE_IMAGE_TAG)
-            ((TagViewHolder) holder).bind(post, openCallBack);
-        else
+        else if (holder instanceof PostVideoViewHolder)
             ((PostVideoViewHolder) holder).bind(post, openCallBack, this);
     }
 

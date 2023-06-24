@@ -19,6 +19,7 @@ import com.jcomp.browser.parser.post.db.Post;
 import com.jcomp.browser.parser.post.db.PostWithPlayList;
 import com.jcomp.browser.tools.HelperFunc;
 import com.jcomp.browser.viewer.PlayListHandler;
+import com.jcomp.browser.viewer.video_loader.ComicDownloaderLoader;
 import com.jcomp.browser.viewer.video_loader.DownloaderLoader;
 import com.jcomp.browser.viewer.video_loader.LocalListLoader;
 import com.jcomp.browser.widget.BreathingAnim;
@@ -137,7 +138,10 @@ public class PostVideoViewHolder extends PostViewHolderBase {
                 itemView.post(() -> {
                     updateDownloadButton(showCheckPost);
                     downloadButton.setTag(post);
-                    openCallBack.onClick(new PostAdapter.VideoCallBackArgs(post, new DownloaderLoader(post, downloadButton), getAbsoluteAdapterPosition()));
+                    if((post.getViewType() & Post.TYPE_COMIC) == Post.TYPE_COMIC)
+                        openCallBack.onClick(new PostAdapter.VideoCallBackArgs(post, new ComicDownloaderLoader(post, downloadButton), getAbsoluteAdapterPosition()));
+                    else
+                        openCallBack.onClick(new PostAdapter.VideoCallBackArgs(post, new DownloaderLoader(post, downloadButton), getAbsoluteAdapterPosition()));
                 });
             });
         });

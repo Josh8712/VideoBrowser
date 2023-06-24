@@ -2,6 +2,7 @@ package com.jcomp.browser.welcome;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
@@ -184,19 +185,32 @@ public class Welcome extends AppCompatActivity {
     private void fakeHistory() {
         if (!AppDatabase.getInstance(this).historyDoa().getAll().isEmpty())
             return;
-        String[] url = {
-                "https://jable.tv/",
-                "https://5278.cc/forum-23-1.html",
-                "https://avple.tv/",
-                "https://www.netflav.com/",
-                "https://85tube.com/",
-                "https://www.seselah.com/",
-                "https://159i.com/video/",
-                "https://twdvd.com/amateur/",
-                "https://missav.com/"
+        SharedPreferences pref = getSharedPreferences("fake", MODE_PRIVATE);
+        int version = pref.getInt("fake", 0);
+        String[][] url = {
+                {
+                    "https://5278.cc/forum-23-1.html",
+                    "https://avple.tv/",
+                    "https://www.netflav.com/",
+                    "https://85tube.com/",
+                    "https://www.seselah.com/",
+                    "https://twdvd.com/amateur/",
+                    "https://159i.com/video/",
+                    "https://missav.com/",
+                    "https://jable.tv/"
+                },
+                {
+                    "https://18h.animezilla.com/"
+                }
         };
-        for (String s : url) {
-            AppDatabase.getInstance(this).historyDoa().insert(new History(null, s));
+        if(version < url.length) {
+            pref.edit().putInt("fake", url.length).apply();
+        }
+        while(version < url.length) {
+            for (String s : url[version]) {
+                AppDatabase.getInstance(this).historyDoa().insert(new History(null, s));
+            }
+            version += 1;
         }
         updateHistory();
     }

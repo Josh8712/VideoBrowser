@@ -3,6 +3,7 @@ package com.jcomp.browser.player;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -56,10 +57,10 @@ import java.util.HashMap;
 public class Player extends AppCompatActivity {
     public static final String PLAYER_INFO_KEY = "PLAYER_INFO_KEY";
     private static final String PLAYER_SHARED_PREF_KEY = "PLAYER_SHARED_PREF_KEY";
-    private static final String LAST_SEEN_POSITION = "LAST_SEEN_POSITION";
+    public static final String LAST_VIEW_POSITION = "LAST_VIEW_POSITION";
     private static final String VOLUME_KEY = "VOLUME_KEY";
     private static SimpleCache simpleCache;
-    PlayerInfo playerInfo;
+    VideoPlayerInfo playerInfo;
     PreviewHandler.Cue mCue = null;
     long bytesRead = 0;
     long startTime = System.currentTimeMillis();
@@ -92,8 +93,8 @@ public class Player extends AppCompatActivity {
             return;
         }
         final String rawInfo = getIntent().getStringExtra(PLAYER_INFO_KEY);
-        playerInfo = new Gson().fromJson(rawInfo, PlayerInfo.class);
-        if(playerInfo.type == PlayerInfo.PlayerType.ONLINE)
+        playerInfo = new Gson().fromJson(rawInfo, VideoPlayerInfo.class);
+        if(playerInfo.type == VideoPlayerInfo.PlayerType.ONLINE)
             new Thread(() -> {
                 PlayListHandler.insertToDefaultHistoryList(playerInfo.post, this);
             }).start();
@@ -109,8 +110,11 @@ public class Player extends AppCompatActivity {
 
         setupPlayer();
         setupDownload();
-        if (savedInstanceState != null && savedInstanceState.containsKey(LAST_SEEN_POSITION))
-            player.seekTo(savedInstanceState.getLong(LAST_SEEN_POSITION));
+        long lastPosition = getSharedPreferences(LAST_VIEW_POSITION, Context.MODE_PRIVATE)
+                .getLong(playerInfo.getKey(), 0);
+        if (lastPosition > 0) {
+            askResume(lastPosition);
+        }
 
         ((TextView) findViewById(R.id.title)).setText(playerInfo.post.getTitle());
         findViewById(R.id.back).setOnClickListener(item -> finish());
@@ -118,6 +122,14 @@ public class Player extends AppCompatActivity {
         binding.playerView.showController();
         setupView(binding.playerView, player);
         setupDownloadProgressUpdater();
+    }
+
+    private void askResume(long lastPosition) {
+        android.app.AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.continue_playing)
+                .setMessage( HelperFunc.convertTime(lastPosition / 1000) )
+                .setPositiveButton(R.string.yes, (dialog, which) -> player.seekTo(lastPosition))
+                .setNegativeButton(R.string.no, null).show();
     }
 
     @Override
@@ -135,8 +147,11 @@ public class Player extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         if (player == null)
             return;
-        if (player.getContentPosition() > 0)
-            outState.putLong(LAST_SEEN_POSITION, player.getContentPosition());
+
+        if (player.getContentPosition() > 0) {
+            getSharedPreferences(LAST_VIEW_POSITION, Context.MODE_PRIVATE).edit()
+                    .putLong(playerInfo.getKey(), player.getContentPosition()).apply();
+        }
     }
 
     @Override
@@ -313,7 +328,7 @@ public class Player extends AppCompatActivity {
     }
 
     private boolean isLocal() {
-        return playerInfo.type == PlayerInfo.PlayerType.LOCAL;
+        return playerInfo.type == VideoPlayerInfo.PlayerType.LOCAL;
     }
 
     private void setupView(StyledPlayerView root, ExoPlayer player) {

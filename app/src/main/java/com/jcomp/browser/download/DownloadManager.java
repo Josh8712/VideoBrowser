@@ -18,6 +18,7 @@ import com.jcomp.browser.AppDatabase;
 import com.jcomp.browser.download.db.DownloadPost;
 import com.jcomp.browser.download.db.DownloadPostDoa;
 import com.jcomp.browser.player.PlayerInfo;
+import com.jcomp.browser.player.VideoPlayerInfo;
 
 import java.io.File;
 import java.util.List;
@@ -51,7 +52,7 @@ public class DownloadManager {
     }
 
     public DownloadPost getRecord(PlayerInfo playerInfo) {
-        return validateRecord(db.getByPath(playerInfo.playerURL));
+        return validateRecord(db.getByPath(playerInfo.getKey()));
     }
 
     public DownloadPost getRecord(DownloadPost downloadPost) {

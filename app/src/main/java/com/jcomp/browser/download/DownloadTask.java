@@ -101,6 +101,8 @@ public class DownloadTask extends Worker {
     }
 
     public VideoType checkType() {
+        if((downloadPost.getViewType() & DownloadPost.TYPE_COMIC) == DownloadPost.TYPE_COMIC)
+            return VideoType.COMIC;
         try {
             HttpURLConnection connection = DownloadHandlerBase.createConnection(downloadPost.videoPath, downloadPost);
             System.out.println(connection.getResponseCode());
@@ -249,7 +251,7 @@ public class DownloadTask extends Worker {
     }
 
     enum VideoType {
-        HLS, MP4, ERROR
+        HLS, MP4, COMIC, ERROR
     }
 
     public enum PreviewType {

@@ -4,33 +4,17 @@ import android.app.ProgressDialog;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jcomp.browser.AppDatabase;
 import com.jcomp.browser.R;
-import com.jcomp.browser.download.db.DownloadPost;
-import com.jcomp.browser.download.db.DownloadPostDoa;
-import com.jcomp.browser.menu.Popup;
-import com.jcomp.browser.parser.post.db.Playlist;
-import com.jcomp.browser.parser.post.db.PlaylistDoa;
 import com.jcomp.browser.parser.post.db.PlaylistWithCount;
-import com.jcomp.browser.parser.post.db.Post;
-import com.jcomp.browser.tools.HelperFunc;
 import com.jcomp.browser.viewer.PlayListHandler;
-import com.jcomp.browser.viewer.video_loader.DownloaderLoader;
-import com.jcomp.browser.viewer.video_loader.LocalListLoader;
-import com.jcomp.browser.widget.BreathingAnim;
 import com.squareup.picasso.Picasso;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class PlayListViewHolder extends RecyclerView.ViewHolder {
 

@@ -88,6 +88,8 @@
     <string name="ok">完成</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="continue_playing">是否從上次觀看的地方繼續?</string>
+    <string name="at_page">第 %1$d 頁</string>
 
 
     <item name="breath_tag" type="id" />

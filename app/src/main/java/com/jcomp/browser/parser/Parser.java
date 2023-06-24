@@ -1,5 +1,6 @@
 package com.jcomp.browser.parser;
 
+import com.jcomp.browser.parser.category.AnimezillaCategoryParser;
 import com.jcomp.browser.parser.category.AvpleCategoryParser;
 import com.jcomp.browser.parser.category.Category;
 import com.jcomp.browser.parser.category.JableCategoryParser;
@@ -8,6 +9,7 @@ import com.jcomp.browser.parser.category.NetCategoryParser;
 import com.jcomp.browser.parser.category.Seselah159iCategoryParser;
 import com.jcomp.browser.parser.category.TWDVDCategoryParser;
 import com.jcomp.browser.parser.category.TubeCategoryParser;
+import com.jcomp.browser.parser.comic.AnimezillaComicParser;
 import com.jcomp.browser.parser.pager.AvplePagerParser;
 import com.jcomp.browser.parser.pager.CCPagerParser;
 import com.jcomp.browser.parser.pager.JablePagerParser;
@@ -33,6 +35,7 @@ import com.jcomp.browser.parser.searcher.JableTubeSearcherParser;
 import com.jcomp.browser.parser.searcher.MissSearcherParser;
 import com.jcomp.browser.parser.searcher.Searcher;
 import com.jcomp.browser.parser.searcher.SeselahSearcherParser;
+import com.jcomp.browser.parser.tag.AnimezillaTagParser;
 import com.jcomp.browser.parser.tag.AvpleTagParser;
 import com.jcomp.browser.parser.tag.CCTagParser;
 import com.jcomp.browser.parser.tag.JableImageTagParser;
@@ -50,6 +53,7 @@ import org.jsoup.nodes.Document;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Parser {
     public static final String NULL_CHAR = "undefined";
@@ -57,11 +61,16 @@ public class Parser {
     private static final Class[] POST_PARSERS = {
             JablePostParser.class, JablePostParser.class, JableImageTagParser.class, AvplePostParser.class, TubePostParser.class, TubeImageTagParser.class, CCPostParser.class, NetPostParser.class, NetImageTagParser.class, SeselahPostParser.class, SeselahImageTagParser.class, II159PostParser.class, TWDVDPostParser.class, MissPostParser.class
     };
+    private static final Class[] COMIC_PARSERS = {
+            AnimezillaComicParser.class
+    };
     private static final Class[] Category_PARSERS = {
-            JableCategoryParser.class, AvpleCategoryParser.class, TubeCategoryParser.class, NetCategoryParser.class, Seselah159iCategoryParser.class, TWDVDCategoryParser.class, MissCategoryParser.class
+            JableCategoryParser.class, AvpleCategoryParser.class, TubeCategoryParser.class, NetCategoryParser.class, Seselah159iCategoryParser.class, TWDVDCategoryParser.class, MissCategoryParser.class,
+            AnimezillaCategoryParser.class
     };
     private static final Class[] Tag_PARSERS = {
-            JableTagParser.class, AvpleTagParser.class, CCTagParser.class, SeselahTagParser.class, MissTagParser.class
+            JableTagParser.class, AvpleTagParser.class, CCTagParser.class, SeselahTagParser.class, MissTagParser.class,
+            AnimezillaTagParser.class
     };
     private static final Class[] Pager_PARSERS = {
             JablePagerParser.class, AvplePagerParser.class, TubePagerParser.class, CCPagerParser.class, NetPagerParser.class, SeselahPagerParser.class, TWDVDPagerParser.class, MissPagerParser.class
@@ -95,6 +104,17 @@ public class Parser {
     public LinkedHashMap<String, Post> getPost() {
         LinkedHashMap<String, Post> posts = new LinkedHashMap<>();
         for (Class<ParserBase<LinkedHashMap<String, Post>>> parser : POST_PARSERS) {
+            try {
+                posts.putAll(parser.newInstance().parse(html, fullURL));
+            } catch (Exception ignore) {
+            }
+        }
+        return posts;
+    }
+
+    public LinkedHashMap<String, Post> getComic() {
+        LinkedHashMap<String, Post> posts = new LinkedHashMap<>();
+        for (Class<ParserBase<LinkedHashMap<String, Post>>> parser : COMIC_PARSERS) {
             try {
                 posts.putAll(parser.newInstance().parse(html, fullURL));
             } catch (Exception ignore) {

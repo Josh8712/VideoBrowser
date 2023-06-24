@@ -26,6 +26,7 @@ import com.jcomp.browser.parser.post.db.Post;
 import com.jcomp.browser.viewer.adapter.PostAdapter;
 import com.jcomp.browser.viewer.adapter.PostFragmentModelView;
 import com.jcomp.browser.viewer.video_loader.ResourceLoader;
+import com.jcomp.browser.viewer.video_loader.VideoResourceLoader;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -42,7 +43,7 @@ public abstract class ViewerFragmentBase extends ListBaseFragment implements Par
     protected PostAdapter adapter;
     protected LinkedHashMap<String, Post> postList = new LinkedHashMap<>();
     protected Browser browser;
-    protected ResourceLoader resourceLoader;
+    protected VideoResourceLoader resourceLoader;
     protected PostFragmentBinding binding;
     private final Observer<LinkedHashMap<String, Post>> postObserver = postList -> {
         int ori_size = this.postList.size();
@@ -263,7 +264,9 @@ public abstract class ViewerFragmentBase extends ListBaseFragment implements Par
     }
 
     public boolean loadVideo(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
+        // check if resourceLoader is type of VideoResourceLoader
+        if (resourceLoader instanceof VideoResourceLoader)
+            this.resourceLoader = (VideoResourceLoader) resourceLoader;
         resourceLoader.start(this);
         return true;
     }

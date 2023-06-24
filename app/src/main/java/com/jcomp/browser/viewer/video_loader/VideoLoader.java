@@ -14,11 +14,11 @@ import com.jcomp.browser.R;
 import com.jcomp.browser.browser.Browser;
 import com.jcomp.browser.parser.post.db.Post;
 import com.jcomp.browser.player.Player;
-import com.jcomp.browser.player.PlayerInfo;
+import com.jcomp.browser.player.VideoPlayerInfo;
 import com.jcomp.browser.tools.HelperFunc;
 import com.jcomp.browser.viewer.ViewerFragmentBase;
 
-public class VideoLoader extends ResourceLoader {
+public class VideoLoader extends VideoResourceLoader {
 
     AlertDialog videoOptionDialog;
     int steps = 0;
@@ -121,7 +121,7 @@ public class VideoLoader extends ResourceLoader {
     }
 
     void callback(String videoURL, String previewURL) {
-        PlayerInfo info = new PlayerInfo(videoURL, playerURL, previewURL, post, PlayerInfo.PlayerType.ONLINE);
+        VideoPlayerInfo info = new VideoPlayerInfo(videoURL, playerURL, previewURL, post, VideoPlayerInfo.PlayerType.ONLINE);
         Intent intent = new Intent(getContext(), Player.class);
         intent.putExtra(Player.PLAYER_INFO_KEY, new Gson().toJson(info));
         postFragment.startActivity(intent);

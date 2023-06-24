@@ -128,5 +128,11 @@ public class HelperFunc {
         clipboard.setPrimaryClip(clip);
     }
 
-
+    // convert time in second to string
+    public static String convertTime(long lastPosition) {
+        long seconds = lastPosition % 60;
+        long minutes = (lastPosition / 60) % 60;
+        long hours = lastPosition / 3600;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
 }
